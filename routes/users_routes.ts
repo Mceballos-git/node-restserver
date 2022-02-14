@@ -1,4 +1,7 @@
-import { Router } from 'express';
+// import { Router } from 'express';
+const Router = require( 'express' );
+export {}
+
 const { usersGet, 
         usersPost, 
         usersPut, 
