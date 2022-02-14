@@ -1,4 +1,5 @@
-import { request, response } from 'express';
+// import { request, response } from 'express';
+const { request, response } = require('express');
 
 
 const usersGet = ( req = request, res = response ) => {
