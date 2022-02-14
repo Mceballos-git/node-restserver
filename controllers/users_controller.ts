@@ -3,7 +3,7 @@ import { request, response } from 'express';
 
 const usersGet = ( req = request, res = response ) => {
 
-    // Se asignan valores por defecto a q6 en caso que el request no lo traiga
+        // Se asignan valores por defecto a q6 en caso que el request no lo traiga
     const {q1, q2, q6 = 10} = req.query;
     const {...params} = req.params;
 
