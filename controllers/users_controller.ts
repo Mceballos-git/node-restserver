@@ -1,27 +1,52 @@
-// import { request, response } from 'express';
-const { request, response } = require('express');
+import { request, response } from 'express';
+// const { request, response } = require( 'express' );
+// const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
+
+const User = require( '../models/user' );
+
 
 
 const usersGet = ( req = request, res = response ) => {
 
-        // Se asignan valores por defecto a q6 en caso que el request no lo traiga
-    const {q1, q2, q6 = 10} = req.query;
-    const {...params} = req.params;
+    // Se asignan valores por defecto a q6 en caso que el request no lo traiga
+    const { query, query2 } = req.query;
+    const { ...params } = req.params;
 
     res.json( {
         msj: "get API - Controller",
-        q1,q2, q6,
+        query, 
+        query2,
         params
     } )
 };
 
-const usersPost = ( req: any, res = response ) => {
+const usersPost = async ( req = request, res = response ) => {
+    
+    // Recibo los datos del Request
+    const { name, email, password, role } = req.body;
 
-    const { nombre, edad } = req.body;
+    // Creo una nueva instancia de usuario con los datos del request
+    const user = new User( { name, email, password, role } );
+
+    // // Verificar si el correo existe
+    // const existEmail = await User.findOne( { email } );
+    // if ( existEmail ) {
+    //     return res.status( 400 ).json( {
+    //         msg: 'El correo ya se encuentra registrado'
+    //     } )
+    // }
+
+    // Encriptar la contraseña
+    const salt = bcrypt.genSaltSync( 10 );
+    user.password = bcrypt.hashSync( password, salt );
+
+    // Guardar en DB
+    await user.save();
+
+    // Respuesta
     res.json( {
-        msj: "post API - Controller",
-        nombre,
-        edad
+        user
     } )
 };
 
