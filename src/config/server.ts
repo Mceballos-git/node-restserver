@@ -45,7 +45,7 @@ export default class Server {
         this.app.use( express.json() );
 
         // Directorio publico
-        this.app.use( express.static( this.twoStepBackPath + 'src/api/public' ) );
+        this.app.use( express.static( 'src/public' ) );
     }
 
 
