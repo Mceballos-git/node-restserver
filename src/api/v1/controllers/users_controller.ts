@@ -1,8 +1,9 @@
-import { request, response } from 'express';
-import bcrypt from 'bcryptjs';
+// import { request, response } from 'express';
+// import bcrypt from 'bcryptjs';
 
+const { request, response } = require('express');
 const User = require( '../models/user_model' );
-
+const bcrypt = require('bcryptjs');
 
 const usersGet = async ( req = request, res = response ) => {
     const { from = 0, limit = 0 } = req.query;

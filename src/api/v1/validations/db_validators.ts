@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-const ObjectId = require('mongoose').Types.ObjectId;
 const Role = require( '../models/role_model' );
 const User = require( '../models/user_model' );
 
