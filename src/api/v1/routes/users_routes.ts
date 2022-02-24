@@ -1,5 +1,6 @@
 import { check } from "express-validator";
-import { Router } from 'express';
+// import { Router } from 'express';
+const Router = require('express');
 import { checkIfValidLimit, checkIfValidFrom } from '../validations/query_params_validators';
 import { checkIfEmailExists, checkIsValidRole, checkIsValidId, checkIfUserIdExists } from '../validations/db_validators';
 import { validateFields } from "../middlewares/validate_fields";
