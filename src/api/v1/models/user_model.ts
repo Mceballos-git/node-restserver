@@ -22,7 +22,7 @@ export const UserSchema = Schema( {
         required: true,
         // enum: [ 'ADMIN_ROLE', 'USER_ROLE' ]
     },
-    status: {
+    active: {
         type: Boolean,
         default: true
     },
@@ -32,9 +32,9 @@ export const UserSchema = Schema( {
     },
 } );
 
-// Metodo para poder extraer __v y password del objeto usuario, para no devolver esos valores al frontend
+// Method to extract "__v" and "password" from the user object, it is not necessary to answer that data
 UserSchema.methods.toJSON = function() {
-    const {__v, password, ...user} = this.toObject();
+    const { __v, password, ...user } = this.toObject();
     return user
 }
 

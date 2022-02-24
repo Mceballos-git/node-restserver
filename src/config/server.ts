@@ -1,20 +1,29 @@
 const express = require( 'express' );
 const cors = require( 'cors' );
-const { dbConnection } = require( '../database/config' );
+const path = require( 'path' );
+
+const { dbConnection } = require( '../config/database' );
 
 
 export default class Server {
     app: any;
     port: string;
+    apiVersion: number;
+    apiFolder: string;
     usuariosPath: string;
+
+    twoStepBackPath = path.join( __dirname, '../../' );
+
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT!;
+        this.apiVersion = 1;
         this.usuariosPath = '/api/users';
+        this.apiFolder = `v${this.apiVersion}`
 
         // Conectar a DB
-        this.conectarDB();
+        this.DBConnect();
 
         // Middlewares
         this.middlewares();
@@ -23,7 +32,7 @@ export default class Server {
         this.routes();
     }
 
-    async conectarDB() {
+    async DBConnect() {
         await dbConnection();
     }
 
@@ -36,12 +45,14 @@ export default class Server {
         this.app.use( express.json() );
 
         // Directorio publico
-        this.app.use( express.static( 'public' ) );
+        this.app.use( express.static( this.twoStepBackPath + 'src/api/public' ) );
     }
 
+
     routes() {
-        this.app.use( this.usuariosPath, require( '../routes/users_routes' ) );
+        this.app.use( this.usuariosPath, require( `../api/${this.apiFolder}/routes/users_routes` ) );
     }
+
 
     listen() {
         this.app.listen( this.port, () => console.log( 'Servidor corriendo en puerto', this.port ) );

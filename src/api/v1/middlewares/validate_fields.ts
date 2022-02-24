@@ -1,9 +1,8 @@
 import { validationResult } from 'express-validator';
-// import { Request, Response, NextFunction } from 'express';
 import { RequestHandler } from 'express';
 
 
- // Verificamos las validaciones de los middlewares
+// Check middleware validations
 export const validateFields: RequestHandler = ( req, res, next ) => {
 
     const errors = validationResult( req );
@@ -15,6 +14,3 @@ export const validateFields: RequestHandler = ( req, res, next ) => {
 
 
 
-// module.exports = {
-//     validateFields
-// }

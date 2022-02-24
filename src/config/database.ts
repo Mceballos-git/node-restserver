@@ -1,4 +1,3 @@
-// const mongoose = require('mongoose');
 import mongoose from 'mongoose';
 
 
@@ -6,7 +5,6 @@ const dbConnection = async () => {
 
     try {
         await mongoose.connect( process.env.MONGODB_CNN as string );
-
         console.log( 'Base de datos online' );
 
     } catch ( error ) {
