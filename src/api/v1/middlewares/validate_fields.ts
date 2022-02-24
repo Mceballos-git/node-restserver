@@ -1,9 +1,8 @@
 import { validationResult } from 'express-validator';
-import { RequestHandler } from 'express';
-
+const { request, response } = require( 'express' );
 
 // Check middleware validations
-export const validateFields: RequestHandler = ( req, res, next ) => {
+export const validateFields = ( req = request, res = response, next: any ) => {
 
     const errors = validationResult( req );
     if ( !errors.isEmpty() ) {
