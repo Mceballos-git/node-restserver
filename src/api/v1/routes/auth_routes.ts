@@ -1,5 +1,5 @@
 const Router = require('express');
-const { check } = require('express-validator');
+import { check } from "express-validator";
 
 import { login } from '../controllers/auth_controller';
 import { validateFields } from '../middlewares/validate_fields';
