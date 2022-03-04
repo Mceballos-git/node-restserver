@@ -1,4 +1,6 @@
 const { request, response } = require( 'express' );
+const bcrypt = require( 'bcryptjs' );
+
 const User = require( '../models/user_model' );
 import { createJWT } from "../helpers/generate_jwt";
 
