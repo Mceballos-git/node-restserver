@@ -1,10 +1,11 @@
-import { Request, Response } from "express"
-import bcrypt from 'bcryptjs';
+const { request, response } = require( 'express' );
+const bcrypt = require( 'bcryptjs' );
+
 import { createJWT } from "../helpers/generate_jwt";
 const User = require( '../models/user_model' );
 
 
-export const login = async ( req: Request, res: Response ) => {
+export const login = async ( req = request, res = response ) => {
 
     const { email, password } = req.body;
 
