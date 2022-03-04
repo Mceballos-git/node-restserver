@@ -84,12 +84,12 @@ const usersDelete = async ( req: any, res = response ) => {
 
     // Check if User to Delete Exists
     if ( !userToDelete ) {
-        return res.json( { msj: `The user ${userToDelete.name} does not exists` } );
+        return res.json( { msj: `The user does not exists` } );
     }
 
     // Check if Active before Delete
     if ( !userToDelete.active ) {
-        return res.json( { msj: `The user ${userToDelete.name} is already deleted` } );
+        return res.json( { msj: `The user is already deleted` } );
     }
 
     // Soft Delete User
