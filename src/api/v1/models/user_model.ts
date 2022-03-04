@@ -1,6 +1,6 @@
 const { Schema, model } = require( 'mongoose' );
 
-export const UserSchema = Schema( {
+export const User = Schema( {
     name: {
         type: String,
         required: [ true, 'El nombre es obligatorio' ]
@@ -33,9 +33,10 @@ export const UserSchema = Schema( {
 } );
 
 // Method to extract "__v" and "password" from the user object, it is not necessary to answer that data
-UserSchema.methods.toJSON = function() {
-    const { __v, password, ...user } = this.toObject();
+User.methods.toJSON = function() {
+    const { __v, password, _id, ...user } = this.toObject();
+    user.uid = _id;
     return user
 }
 
-module.exports = model( 'User', UserSchema );
+module.exports = model( 'User', User );

@@ -11,6 +11,7 @@ export default class Server {
     apiVersion: number;
     apiFolder: string;
     usuariosPath: string;
+    authPath: string;
 
     twoStepBackPath = path.join( __dirname, '../../' );
 
@@ -20,6 +21,7 @@ export default class Server {
         this.port = process.env.PORT!;
         this.apiVersion = 1;
         this.usuariosPath = '/api/users';
+        this.authPath = '/auth';
         this.apiFolder = `v${this.apiVersion}`
 
         // Conectar a DB
@@ -50,6 +52,7 @@ export default class Server {
 
 
     routes() {
+        this.app.use( this.authPath, require( `../api/${this.apiFolder}/routes/auth_routes` ) );
         this.app.use( this.usuariosPath, require( `../api/${this.apiFolder}/routes/users_routes` ) );
     }
 

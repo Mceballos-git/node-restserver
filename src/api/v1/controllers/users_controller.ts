@@ -1,9 +1,6 @@
-// import { request, response } from 'express';
-// import bcrypt from 'bcryptjs';
-
-const { request, response } = require('express');
+const { request, response } = require( 'express' );
 const User = require( '../models/user_model' );
-const bcrypt = require('bcryptjs');
+const bcrypt = require( 'bcryptjs' );
 
 const usersGet = async ( req = request, res = response ) => {
     const { from = 0, limit = 0 } = req.query;
@@ -74,20 +71,31 @@ const usersPut = async ( req: any, res = response ) => {
         rest.password = bcrypt.hashSync( password, salt );
     }
     const user = await User.findByIdAndUpdate( id, rest, { new: true } );
-    if ( !user) {
-        return res.json({'Error': 'User does not exist'});
+    if ( !user ) {
+        return res.json( { 'Error': 'User does not exist' } );
     }
     res.json( user );
 };
 
 const usersDelete = async ( req: any, res = response ) => {
+    // User to Delete
     const { id } = req.params;
+    const userToDelete = await User.findById( id );
 
-    const user = await User.findByIdAndUpdate( id, { active: false }, { new: true } );
-    if ( !user) {
-        return res.json({'Error': 'User does not exist'});
+    // Check if User to Delete Exists
+    if ( !userToDelete ) {
+        return res.json( { msj: `The user ${userToDelete.name} does not exists` } );
     }
-    return res.json( user )
+
+    // Check if Active before Delete
+    if ( !userToDelete.active ) {
+        return res.json( { msj: `The user ${userToDelete.name} is already deleted` } );
+    }
+
+    // Soft Delete User
+    const userDeleted = await User.findByIdAndUpdate( id, { active: false }, { new: true } );
+
+    return res.json( { userDeleted } );
 }
 
 
