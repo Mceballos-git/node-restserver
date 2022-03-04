@@ -1,3 +1,5 @@
 # WebServer + RestServer
 
-Recuerden que deben ejecutar ``npm install`` para reconstruir los modulos de Node.
+**Still in development**
+
+Run ``npm install`` to rebuild Node modules.
