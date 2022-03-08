@@ -3,8 +3,14 @@ const User = require( '../models/user_model' );
 const bcrypt = require( 'bcryptjs' );
 
 import { createJWT } from "../helpers/generate_jwt";
+import { badRequestResponse, internalErrorResponse, sucessResponse, unauthorizedResponse } from '../helpers/ResponseHandler';
 
-
+/**
+ * Attempt to login.
+ * @param req 
+ * @param res 
+ * @returns JsonResponse
+ */
 export const login = async ( req = request, res = response ) => {
 
     const { email, password } = req.body;
@@ -14,40 +20,28 @@ export const login = async ( req = request, res = response ) => {
 
         // Check if user exists
         if ( !user ) {
-            return res.status( 400 ).json( {
-                msg: 'Invalid login credentials - email'
-            } )
+            return badRequestResponse( res, 'Invalid login credentials - email' )
         }
 
         // Check if active user
         if ( !user.active ) {
-            return res.status( 400 ).json( {
-                msg: 'Invalid login credentials - active'
-            } )
+            return badRequestResponse( res, 'Invalid login credentials - User not active' )
         }
 
         // Check password
         const passOK = bcrypt.compareSync( password, user.password );
         if ( !passOK ) {
-            return res.status( 400 ).json( {
-                msg: 'Invalid login credentials - pass',
-            } )
+            return unauthorizedResponse( res, 'Invalid login credentials - pass' )
         }
 
         // JWT Generation
         const token = await createJWT( user.id );
 
-        return res.json( {
-            msg: 'Login Ok',
-            user,
-            token
-        } )
+        return sucessResponse( res, 'ok', { user, token } )
 
     } catch ( error ) {
         console.log( error );
-        res.status( 500 ).json( {
-            msg: 'Server Error, please contact Administrators'
-        } )
+        return internalErrorResponse( res, 'Server Error, please contact Administrators' )
     }
 }
 

@@ -1,5 +1,10 @@
 const Jwt = require( 'jsonwebtoken' )
 
+/**
+ * Create a new Jason Web Token based on User UID
+ * @param uid 
+ * @returns 
+ */
 export const createJWT = ( uid: string ) => {
 
     return new Promise( ( resolve, reject ) => {
@@ -15,7 +20,6 @@ export const createJWT = ( uid: string ) => {
             resolve( token );
         } )
     } )
-
 }
 
 module.exports = {

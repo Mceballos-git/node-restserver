@@ -3,11 +3,17 @@ const Jwt = require( 'jsonwebtoken' );
 const User = require( '../models/user_model' );
 
 
-// Check middleware validations
+/**
+ * Check if client send valid Token.
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns JsonResponse
+ */
 export const checkToken = async ( req = request, res = response, next: any ) => {
+    
+    // Verify if Token Exists in request header
     const token = req.header( 'x-token' );
-
-    // Verify Token Exists
     if ( !token ) {
         return res.status( 401 ).json( {
             msg: 'Invalid Token - No Token'
@@ -15,7 +21,7 @@ export const checkToken = async ( req = request, res = response, next: any ) => 
     }
 
     try {
-        // Extraigo el UID del JWT
+        // Extract UID from JWT
         const { uid } = Jwt.verify( token, process.env.SECRETORPRIVATEKEY );
         const user = await User.findById( uid );
 
@@ -33,7 +39,7 @@ export const checkToken = async ( req = request, res = response, next: any ) => 
             } )
         }
 
-        // Agrego el Usuario Logueado al Request, asi ya llega al controlador con esa data
+        // I add the Logged User to the Request, so it already reaches the controller with that data
         req.user = user;
 
     } catch ( error ) {

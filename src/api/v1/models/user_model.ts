@@ -32,7 +32,7 @@ export const User = Schema( {
     },
 } );
 
-// Method to extract "__v" and "password" from the user object, it is not necessary to answer that data
+// Method to extract "__v" and "password" from the user object, it is not necessary to answer that data.
 User.methods.toJSON = function() {
     const { __v, password, _id, ...user } = this.toObject();
     user.uid = _id;

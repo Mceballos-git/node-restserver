@@ -1,3 +1,8 @@
+/**
+ * Check if value passed on "limit" query param, is a Number.
+ * @param limit number
+ * @returns JsonResponse
+ */
 export const checkIfValidLimit = async ( limit: number = 0 ) => {
     if ( !limit ) return true;
     if ( !Number(limit) ) {
@@ -5,6 +10,12 @@ export const checkIfValidLimit = async ( limit: number = 0 ) => {
     }
 }
 
+
+/**
+ * Check if value passed on "from" query param, is a Number.
+ * @param from number
+ * @returns JsonResponse
+ */
 export const checkIfValidFrom = async ( from: number = 0 ) => {
     if ( !from ) return true;
     if ( !Number(from) ) {

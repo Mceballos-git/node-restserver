@@ -12,12 +12,16 @@ const {
 	checkIsValidRole
 } = require( '../middlewares' )
 
-const { usersGet,
-	usersPost,
-	usersPut,
-	usersDelete } = require( '../controllers/users_controller' );
+const { 
+	getUsers,
+	createUser,
+	updateUser,
+	deleteUser 
+} = require( '../controllers/users_controller' );
 
 export { }
+
+
 
 const router = Router();
 
@@ -25,9 +29,10 @@ router.get( '/', [
 	check( 'limit' ).custom( checkIfValidLimit ), // Optional query parameter validation
 	check( 'from' ).custom( checkIfValidFrom ),   // Optional query parameter validation
 	validateFields
-], usersGet );
+], getUsers );
 
-router.post( '/', [ // 
+router.post( '/', [
+	checkToken,
 	check( 'name', 'El nombre es obligatorio' ).not().isEmpty(),
 	check( 'password', 'El password es obligatorio' ).not().isEmpty(),
 	check( 'password', 'El password debe contener 6 carateres como minimo' ).isLength( { min: 6 } ),
@@ -35,7 +40,7 @@ router.post( '/', [ //
 	check( 'email' ).custom( checkIfUserEmailExists ),
 	checkIsValidRole,
 	validateFields
-], usersPost );
+], createUser );
 
 
 // ID is optional? so it doesn't fail if they send it empty, the first middleware is in charge of validating
@@ -45,16 +50,15 @@ router.put( '/:id?', [
 	check( 'id' ).custom( checkIsValidUserId ),
 	checkIsValidRole,
 	validateFields
-], usersPut );
+], updateUser );
 
 
 router.delete( '/:id?', [
 	checkToken,
-	// checkIsAdmin, 							   // Only Admins can delete users
 	checkIsHaveARole( 'ADMIN_ROLE', 'VENTAS_ROLE' ), // Only this roles can delete users
 	check( 'id' ).custom( checkIsValidUserId ),
 	validateFields
-], usersDelete );
+], deleteUser );
 
 
 module.exports = router;
