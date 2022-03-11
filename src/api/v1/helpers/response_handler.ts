@@ -34,13 +34,30 @@ export const sucessResponse = ( res = response, msj: string, data?: object ) => 
 }
 
 /**
- * The server has successfully fulfilled the request and that there is no additional content to send in the response body
+ * Login Sucessfull Response.
  * @param res 
  * @param data 
  * @returns json
  */
- export const noContentResponse = ( res = response ) => {
-    return res.status( 204 ).json({});
+export const loginSucessResponse = ( res = response, msj: string, user: any, token: string ) => {
+    return res.status( 200 ).json( {
+        msj,
+        user,
+        token
+    } );
+}
+
+/**
+ * Created Sucessfull Response
+ * @param res 
+ * @param data 
+ * @returns json
+ */
+ export const sucessfullCreationResponse = ( res = response, msj: string, data?: object ) => {
+    return res.status( 201 ).json( {
+        msj,
+        data
+    } );
 }
 
 
@@ -71,6 +88,17 @@ export const returnErrorResponse = ( res = response, title: string, msj: any, st
  */
 export const badRequestResponse = ( res = response, msg: any ) => {
     return returnErrorResponse( res, '400 - BAD REQUEST', msg, 400 )
+}
+
+
+/**
+ * The server has successfully fulfilled the request and that there is no additional content to send in the response body
+ * @param res 
+ * @param data 
+ * @returns json
+ */
+ export const noContentResponse = ( res = response ) => {
+    return res.status( 204 ).json( {} );
 }
 
 

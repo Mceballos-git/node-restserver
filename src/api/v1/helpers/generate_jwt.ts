@@ -3,7 +3,7 @@ const Jwt = require( 'jsonwebtoken' )
 /**
  * Create a new Jason Web Token based on User UID
  * @param uid 
- * @returns 
+ * @returns token <string>
  */
 export const createJWT = ( uid: string ) => {
 

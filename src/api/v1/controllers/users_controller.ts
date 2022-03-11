@@ -1,4 +1,4 @@
-import { sucessResponse, notFoundResponse, noContentResponse } from '../helpers/ResponseHandler';
+import { sucessResponse, notFoundResponse, sucessfullCreationResponse } from '../helpers/response_handler';
 
 const { request, response } = require( 'express' );
 const User = require( '../models/user_model' );
@@ -18,8 +18,8 @@ const getUsers = async ( req = request, res = response ) => {
     const query = { active: true };
 
     const [ total, usuarios ] = await Promise.all( [
-        User.countDocuments( query ), // Primera promesa corresponde a "total"
-        User.find( query )            // Segunda promesa corresponde a "usuarios"
+        User.countDocuments( query ), // First promise correspond to "total"
+        User.find( query )            // Second promise correspond to "usuarios"
             .skip( from )
             .limit( limit ),
     ] );
@@ -30,7 +30,7 @@ const getUsers = async ( req = request, res = response ) => {
 
 
 /**
- * Create a new User instance.
+ * Create a new Resource (User).
  * @param req request
  * @param res response
  * @return JsonResponse
@@ -51,7 +51,7 @@ const createUser = async ( req = request, res = response ) => {
     await user.save();
 
     // Response
-    return sucessResponse( res, 'ok', user )
+    return sucessfullCreationResponse(res, 'ok', user)
 };
 
 /**
