@@ -1,8 +1,10 @@
-import { sucessResponse, notFoundResponse, sucessfullCreationResponse } from '../helpers/response_handler';
-
 const { request, response } = require( 'express' );
-const User = require( '../models/user_model' );
-const bcrypt = require( 'bcryptjs' );
+const { User } = require( '../models' );
+
+const encryptPassword = require( '../helpers/encrypt_password' );
+
+import { sucessResponse, sucessfullCreationResponse } from '../helpers/response_handler';
+
 
 
 /**
@@ -36,7 +38,6 @@ const getUsers = async ( req = request, res = response ) => {
  * @return JsonResponse
  */
 const createUser = async ( req = request, res = response ) => {
-
     // Receive the Request data from POST
     const { name, email, password, role } = req.body;
 
@@ -44,15 +45,15 @@ const createUser = async ( req = request, res = response ) => {
     const user = new User( { name, email, password, role } );
 
     // Encrypt the password
-    const salt = bcrypt.genSaltSync( 10 );
-    user.password = bcrypt.hashSync( password, salt );
+    user.password = encryptPassword( password );
 
     // Save to DB
     await user.save();
 
     // Response
-    return sucessfullCreationResponse(res, 'ok', user)
+    return sucessfullCreationResponse( res, 'ok', user )
 };
+
 
 /**
  * Update User.
@@ -61,28 +62,22 @@ const createUser = async ( req = request, res = response ) => {
  * @return JsonResponse
  */
 const updateUser = async ( req: any, res = response ) => {
+
     // Receive the Request data from POST
+    const { id } = req.params;                                      // URL params
+    const { _id, password, google, email, ...rest } = req.body;     // Body params
 
-    const { id } = req.params; // URL params
-    const { _id, password, google, email, ...rest } = req.body; // Request body
-
-    if ( password ) {
-        // Encrypt the password
-        const salt = bcrypt.genSaltSync( 10 );
-        rest.password = bcrypt.hashSync( password, salt );
+    if ( password ) { // Just in case you want to change the password
+        rest.password = encryptPassword( password );
     }
 
     // Find User
     const user = await User.findByIdAndUpdate( id, rest, { new: true } );
 
-    // If not find User, return Empty Object
-    if ( !user ) {
-        return notFoundResponse( res, 'User does not exist' );
-    }
-    
     // Response
     return sucessResponse( res, 'ok', user )
 };
+
 
 /**
  * Delete User
@@ -93,17 +88,6 @@ const updateUser = async ( req: any, res = response ) => {
 const deleteUser = async ( req: any, res = response ) => {
     // User to Delete
     const { id } = req.params;
-    const userToDelete = await User.findById( id );
-
-    // Check if User to Delete Exists
-    if ( !userToDelete ) {
-        return notFoundResponse( res, `The user ${userToDelete.name ??= ''} does not exists` )
-    }
-
-    // Check if Active before Delete
-    if ( !userToDelete.active ) {
-        return notFoundResponse( res, `The user ${userToDelete.name ??= ''} is already deleted` )
-    }
 
     // Soft Delete User
     const userDeleted = await User.findByIdAndUpdate( id, { active: false }, { new: true } );
