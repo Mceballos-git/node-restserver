@@ -1,6 +1,5 @@
 const express = require( 'express' );
 const cors = require( 'cors' );
-const path = require( 'path' );
 
 const { dbConnection } = require( '../config/database' );
 
@@ -10,18 +9,21 @@ export default class Server {
     port: string;
     apiVersion: number;
     apiFolder: string;
-    usuariosPath: string;
-    authPath: string;
-
-    twoStepBackPath = path.join( __dirname, '../../' );
-
+    paths;
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT!;
         this.apiVersion = 1;
-        this.usuariosPath = '/api/users';
-        this.authPath = '/auth';
+
+        this.paths = {
+            auth: '/auth',
+            categories: '/api/categories',
+            products: '/api/products',
+            search: '/api/search',
+            users: '/api/users',
+        };
+
         this.apiFolder = `v${this.apiVersion}`
 
         // Conectar a DB
@@ -52,8 +54,11 @@ export default class Server {
 
 
     routes() {
-        this.app.use( this.authPath, require( `../api/${this.apiFolder}/routes/auth_routes` ) );
-        this.app.use( this.usuariosPath, require( `../api/${this.apiFolder}/routes/users_routes` ) );
+        this.app.use( this.paths.auth,       require( `../api/${this.apiFolder}/routes/auth_routes` ) );
+        this.app.use( this.paths.categories, require( `../api/${this.apiFolder}/routes/categories_routes` ) );
+        this.app.use( this.paths.products,   require( `../api/${this.apiFolder}/routes/products_routes` ) );
+        this.app.use( this.paths.search,   require( `../api/${this.apiFolder}/routes/search_routes.ts` ) );
+        this.app.use( this.paths.users,      require( `../api/${this.apiFolder}/routes/users_routes` ) );
     }
 
 
