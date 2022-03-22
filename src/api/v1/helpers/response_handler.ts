@@ -1,5 +1,3 @@
-import { StringSchemaDefinition } from "mongoose";
-
 const { response } = require( 'express' );
 
 /**
@@ -26,10 +24,22 @@ export const jsonResponse = ( res = response, data: object, statusCode: number =
  * @param data 
  * @returns json
  */
-export const sucessResponse = ( res = response, msj: string, data?: object ) => {
+export const sucessResponse = ( res = response, msg: string, data?: object ) => {
     return res.status( 200 ).json( {
-        msj,
+        msg,
         data
+    } );
+}
+
+/**
+ * The server successfully processed the search request.
+ * @param res 
+ * @param data 
+ * @returns json
+ */
+ export const sucessSearchResponse = ( res = response, results: [] ) => {
+    return res.status( 200 ).json( {
+        results
     } );
 }
 
@@ -39,9 +49,9 @@ export const sucessResponse = ( res = response, msj: string, data?: object ) => 
  * @param data 
  * @returns json
  */
-export const loginSucessResponse = ( res = response, msj: string, user: any, token: string ) => {
+export const loginSucessResponse = ( res = response, msg: string, user: any, token: string ) => {
     return res.status( 200 ).json( {
-        msj,
+        msg,
         user,
         token
     } );
@@ -53,9 +63,9 @@ export const loginSucessResponse = ( res = response, msj: string, user: any, tok
  * @param data 
  * @returns json
  */
- export const sucessfullCreationResponse = ( res = response, msj: string, data?: object ) => {
+ export const sucessfullCreationResponse = ( res = response, msg: string, data?: object ) => {
     return res.status( 201 ).json( {
-        msj,
+        msg,
         data
     } );
 }
@@ -70,10 +80,10 @@ export const loginSucessResponse = ( res = response, msj: string, user: any, tok
  * @param statusCode 
  * @returns json
  */
-export const returnErrorResponse = ( res = response, title: string, msj: any, statusCode: number ) => {
+export const returnErrorResponse = ( res = response, title: string, msg: any, statusCode: number ) => {
     const responseData = {
-        'error': title,
-        'details': msj,
+        'msg': title,
+        'data': msg,
         'status_code': statusCode
     }
     return res.status( statusCode ).json( responseData )
