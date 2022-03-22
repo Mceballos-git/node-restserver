@@ -2,7 +2,12 @@ const Router = require( 'express' );
 import { check } from "express-validator";
 
 import { checkIfValidLimit, checkIfValidFrom } from '../validations/query_params_validators';
-import { checkIfUserEmailExists, checkIsValidUserId } from '../validations/db_validators';
+import { 
+	checkIfUserEmailIsAvailable, 
+	checkIsValidMongoId, 
+	checkIfUserIdExists, 
+	checkIfUserIsActive 
+} from '../validations/user_validations';
 
 const {
 	validateFields,
@@ -25,38 +30,51 @@ export { }
 
 const router = Router();
 
+/**
+ * Get all Users
+ */
 router.get( '/', [
 	check( 'limit' ).custom( checkIfValidLimit ), // Optional query parameter validation
 	check( 'from' ).custom( checkIfValidFrom ),   // Optional query parameter validation
 	validateFields
 ], getUsers );
 
+/**
+ * Create New User
+ */
 router.post( '/', [
 	checkToken,
-	check( 'name', 'El nombre es obligatorio' ).not().isEmpty(),
-	check( 'password', 'El password es obligatorio' ).not().isEmpty(),
-	check( 'password', 'El password debe contener 6 carateres como minimo' ).isLength( { min: 6 } ),
-	check( 'email', 'El correo no es valido' ).isEmail(),
-	check( 'email' ).custom( checkIfUserEmailExists ),
+	check( 'name', 'Name is required' ).not().isEmpty(),
+	check( 'password', 'Password is required' ).not().isEmpty(),
+	check( 'password', 'The password must contain at least 6 characters' ).isLength( { min: 6 } ),
+	check( 'email', 'The email is not valid' ).isEmail(),
+	check( 'email' ).custom( checkIfUserEmailIsAvailable ),
 	checkIsValidRole,
 	validateFields
 ], createUser );
 
-
-// ID is optional? so it doesn't fail if they send it empty, the first middleware is in charge of validating
+/**
+ * Update User
+ * ID is optional? so it doesn't fail if they send it empty, the first middleware is in charge of validating
+ */
 router.put( '/:id?', [
 	checkToken,
 	checkIsAdmin,
-	check( 'id' ).custom( checkIsValidUserId ),
+	check( 'id' ).custom( checkIsValidMongoId ),
+	check( 'id' ).custom( checkIfUserIdExists ),
 	checkIsValidRole,
 	validateFields
 ], updateUser );
 
-
+/**
+ * Soft Delete User
+ */
 router.delete( '/:id?', [
 	checkToken,
-	checkIsHaveARole( 'ADMIN_ROLE', 'VENTAS_ROLE' ), // Only this roles can delete users
-	check( 'id' ).custom( checkIsValidUserId ),
+	checkIsHaveARole( 'ADMIN_ROLE' ), // Only this roles can delete users
+	check( 'id' ).custom( checkIsValidMongoId ),
+	check( 'id' ).custom( checkIfUserIdExists ),
+	check( 'id' ).custom( checkIfUserIsActive ),
 	validateFields
 ], deleteUser );
 
