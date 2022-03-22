@@ -1,6 +1,12 @@
 const { request, response } = require( 'express' );
 const Role = require( '../models/role_model' );
 
+
+const VERIFY_TOKEN_FIRST = 'You want to verify role without having verified token first';
+const NOT_ADMINISTRATOR = 'The user is not an administrator';
+const NOT_VALID_ROLE = 'Is not a valid role for this action';
+const ROLE_DONT_EXISTS = 'The role dont exists';
+
 /**
  * Check if User role is 'ADMIN_ROLE'
  * @param req request
@@ -11,14 +17,14 @@ const Role = require( '../models/role_model' );
 export const checkIsAdmin = ( req = request, res = response, next: any ) => {
     // Logged User is inside the request, from the previous middleware
     if ( !req.user ) {
-        return res.status( 500 ).json( { msj: `You want to verify role without having verified token first` } );
+        throw new Error( VERIFY_TOKEN_FIRST );
     }
 
-    const { role, name } = req.user;
+    const { role } = req.user;
 
     // Check if ADMIN role
     if ( role !== 'ADMIN_ROLE' ) {
-        return res.status( 401 ).json( { msj: `The user ${name} is not an administrator` } );
+        throw new Error( NOT_ADMINISTRATOR );
     }
     next();
 }
@@ -32,11 +38,11 @@ export const checkIsHaveARole = ( ...roles: any ) => {
     return ( req = request, res = response, next: any ) => {
         // Logged User is inside the request, from the previous middleware
         if ( !req.user ) {
-            return res.status( 500 ).json( { msj: `You want to verify role without having verified token first` } );
+            throw new Error( VERIFY_TOKEN_FIRST );
         }
-        
+
         if ( !roles.includes( req.user.role ) ) {
-            return res.status( 401 ).json( { msj: `The service requires one of these roles: ${roles}` } );
+            throw new Error( NOT_VALID_ROLE );
         }
         next();
     }
@@ -51,10 +57,10 @@ export const checkIsHaveARole = ( ...roles: any ) => {
  */
 export const checkIsValidRole = async ( req = request, res = response, next: any ) => {
     const role = req.body.role;
-    
+
     const roleExists = await Role.findOne( { role } );
     if ( !roleExists ) {
-        return res.status( 500 ).json( { msj: `The role ${role} dont exists` } );
+        throw new Error( ROLE_DONT_EXISTS );
     }
     next();
 }
