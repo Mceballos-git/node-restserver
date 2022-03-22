@@ -3,7 +3,7 @@ const { Schema, model } = require( 'mongoose' );
 export const Role = Schema( {
     role: {
         type: String,
-        required: [ true, 'El rol es obligatorio' ]
+        required: [ true, 'Role is required' ]
     },
 } )
 
